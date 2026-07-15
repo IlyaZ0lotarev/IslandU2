@@ -1,4 +1,6 @@
 package com.javarush.island.zolotarev.island.entity.animals.predators;
 
-public class Boa {
+import com.javarush.island.zolotarev.island.entity.animals.Predator;
+
+public class Boa extends Predator {
 }

@@ -1,4 +1,4 @@
 package com.javarush.island.zolotarev.island.entity.animals.herbivores;
 
-public class Duck {
+public class Duck extends Herbivore{
 }

@@ -1,4 +1,7 @@
 package com.javarush.island.zolotarev.island.entity.animals.predators;
 
-public class Fox {
+import com.javarush.island.zolotarev.island.entity.animals.Predator;
+
+public class Fox extends Predator {
+
 }

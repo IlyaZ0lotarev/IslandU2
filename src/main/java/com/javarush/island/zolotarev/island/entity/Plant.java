@@ -1,9 +1,12 @@
 package com.javarush.island.zolotarev.island.entity;
 
 public class Plant extends Organism {
+    public Plant(int x, int y, double weight, int maxPerCell) {
+        super(x, y, weight, 0.0, maxPerCell);
+    }
 
     public Plant(int x, int y) {
-        super(x, y, 1, 0, 0);
+        this(x, y, 1.0, 200);
     }
 
     @Override
