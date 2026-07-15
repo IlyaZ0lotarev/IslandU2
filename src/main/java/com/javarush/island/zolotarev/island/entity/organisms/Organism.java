@@ -1,4 +1,6 @@
-package com.javarush.island.zolotarev.island.entity;
+package com.javarush.island.zolotarev.island.entity.organisms;
+
+import com.javarush.island.zolotarev.island.entity.Entity;
 
 public abstract class Organism extends Entity {
     protected double weight;      // вес

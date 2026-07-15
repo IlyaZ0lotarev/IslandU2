@@ -1,6 +1,6 @@
 package com.javarush.island.zolotarev.island.entity.map;
 
-import com.javarush.island.zolotarev.island.entity.Organism;
+import com.javarush.island.zolotarev.island.entity.organisms.Organism;
 
 import java.util.*;
 

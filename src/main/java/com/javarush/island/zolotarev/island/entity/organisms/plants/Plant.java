@@ -1,4 +1,6 @@
-package com.javarush.island.zolotarev.island.entity;
+package com.javarush.island.zolotarev.island.entity.organisms.plants;
+
+import com.javarush.island.zolotarev.island.entity.organisms.Organism;
 
 public class Plant extends Organism {
     public Plant(int x, int y, double weight, int maxPerCell) {
