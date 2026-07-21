@@ -105,8 +105,7 @@ public abstract class Animal extends Organism {
             }
             Location oldLoc = island.getLocation(x, y);
             Location.withLocks(oldLoc, newLoc, () -> {
-                if (oldLoc.countOrganismsOfType(getClass()) == 0
-                        || !oldLoc.getOrganismsOfType(getClass()).contains(this)) {
+                if (!oldLoc.getOrganismsOfType(getClass()).contains(this)) {
                     return;
                 }
                 if (newLoc.countOrganismsOfType(getClass()) >= maxPerCell) {
@@ -132,11 +131,17 @@ public abstract class Animal extends Organism {
         if (ThreadLocalRandom.current().nextDouble() >= SimulationConfig.REPRODUCE_CHANCE) {
             return;
         }
+        int offspring = Math.max(1, SimulationConfig.OFFSPRING_PER_BIRTH);
         try {
-            Animal baby = getClass()
-                    .getDeclaredConstructor(int.class, int.class)
-                    .newInstance(x, y);
-            location.addOrganism(baby);
+            for (int i = 0; i < offspring; i++) {
+                if (location.countOrganismsOfType(getClass()) >= maxPerCell) {
+                    break;
+                }
+                Animal baby = getClass()
+                        .getDeclaredConstructor(int.class, int.class)
+                        .newInstance(x, y);
+                location.addOrganism(baby);
+            }
         } catch (ReflectiveOperationException ignored) {
         }
     }
