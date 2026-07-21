@@ -1,9 +1,11 @@
 package com.javarush.island.zolotarev.island.entity.organisms;
 
 import com.javarush.island.zolotarev.island.entity.Entity;
+import com.javarush.island.zolotarev.island.entity.map.Location;
+import com.javarush.island.zolotarev.island.util.Direction;
 
 public abstract class Organism extends Entity {
-    protected double weight;      // вес
+    protected double weight;
     protected double maxFood;     // сколько еды нужно для насыщения
     protected double foodEaten;   // сколько уже съедено в этом такте
     protected int maxPerCell;      // макс. количество этого вида на одной клетке
@@ -50,6 +52,15 @@ public abstract class Organism extends Entity {
     }
 
     public boolean isHungry() {
+        if (maxFood <= 0) {
+            return false;
+        }
         return foodEaten < maxFood;
     }
+
+    public abstract boolean canEat(Organism target);
+    public abstract void reproduce(Location location);
+    public abstract Direction chooseMovementDirection();
+    public abstract void metabolize();
+
 }

@@ -2,7 +2,10 @@ package com.javarush.island.zolotarev.island.entity.map;
 
 import com.javarush.island.zolotarev.island.entity.organisms.Organism;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Island {
     private final int width;
@@ -37,38 +40,26 @@ public class Island {
         return height;
     }
 
-    // список всех организмов на острове.
     public List<Organism> getAllOrganisms() {
         List<Organism> all = new ArrayList<>();
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                Location loc = locations[x][y];
-                for (Set<Organism> set : loc.getAllOrganisms().values()) {
-                    all.addAll(set);
-                }
+                all.addAll(locations[x][y].getAllOrganisms());
             }
         }
         return all;
     }
 
-    // Статистика по количеству организмов каждого типа на острове.
     public Map<Class<? extends Organism>, Integer> getStatistics() {
         Map<Class<? extends Organism>, Integer> stats = new HashMap<>();
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                Location loc = locations[x][y];
-                for (Map.Entry<Class<? extends Organism>, Set<Organism>> entry :
-                        loc.getAllOrganisms().entrySet()) {
-                    Class<? extends Organism> type = entry.getKey();
-                    int count = entry.getValue().size();
-                    stats.merge(type, count, Integer::sum);
-                }
+        for (Organism organism : getAllOrganisms()) {
+            if (organism.isAlive()) {
+                stats.merge(organism.getClass(), 1, Integer::sum);
             }
         }
         return stats;
     }
 
-    // общее количество всех организмов на острове.
     public int getTotalOrganismCount() {
         int total = 0;
         for (int x = 0; x < width; x++) {
