@@ -38,6 +38,9 @@ public final class SimulationConfig {
     public static final int SHOW_COLS = 40;
     public static final int CONSOLE_CELL_WIDTH = 2;
 
+    /** Потоки для жизненного цикла животных внутри одного такта. */
+    public static final int WORKER_POOL_SIZE = Math.max(2, Runtime.getRuntime().availableProcessors());
+
     private static final Map<Class<? extends Organism>, Integer> INITIAL_POPULATION = new LinkedHashMap<>();
 
     static {

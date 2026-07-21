@@ -41,7 +41,6 @@ public abstract class Animal extends Organism {
         }
     }
 
-    /** Попытка поесть: для каждого типа добычи на клетке бросок по {@link FoodMatrix}. */
     public void eat(Location location) {
         if (!isHungry()) {
             return;
@@ -70,10 +69,6 @@ public abstract class Animal extends Organism {
         }
     }
 
-    /**
-     * Успех охоты: вероятность из таблицы (например, волк → кролик 60%).
-     * {@link ThreadLocalRandom} — потокобезопасный генератор для многопоточной симуляции.
-     */
     @Override
     public boolean canEat(Organism target) {
         if (target == null || !target.isAlive() || target == this) {
@@ -109,9 +104,18 @@ public abstract class Animal extends Organism {
                 continue;
             }
             Location oldLoc = island.getLocation(x, y);
-            oldLoc.removeOrganism(this);
-            setCoordinates(nx, ny);
-            newLoc.addOrganism(this);
+            Location.withLocks(oldLoc, newLoc, () -> {
+                if (oldLoc.countOrganismsOfType(getClass()) == 0
+                        || !oldLoc.getOrganismsOfType(getClass()).contains(this)) {
+                    return;
+                }
+                if (newLoc.countOrganismsOfType(getClass()) >= maxPerCell) {
+                    return;
+                }
+                oldLoc.removeOrganism(this);
+                setCoordinates(nx, ny);
+                newLoc.addOrganism(this);
+            });
         }
     }
 
