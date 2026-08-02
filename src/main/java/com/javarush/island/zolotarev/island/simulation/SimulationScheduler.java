@@ -76,8 +76,4 @@ public final class SimulationScheduler {
             }
         }
     }
-
-    public SimulationEngine getEngine() {
-        return engine;
-    }
 }
