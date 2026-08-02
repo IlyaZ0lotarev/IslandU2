@@ -1,5 +1,6 @@
 package com.javarush.island.zolotarev.island.view.console;
 
+import com.javarush.island.zolotarev.island.api.view.View;
 import com.javarush.island.zolotarev.island.config.OrganismRegistry;
 import com.javarush.island.zolotarev.island.config.SimulationConfig;
 import com.javarush.island.zolotarev.island.entity.map.Island;
@@ -16,21 +17,24 @@ import java.util.stream.IntStream;
 
 import static com.javarush.island.zolotarev.island.view.console.Symbols.*;
 
-public final class ConsoleView {
+public final class ConsoleView implements View {
+
+    public static final ConsoleView INSTANCE = new ConsoleView();
 
     private static final int CELL_CHARS = 4;
 
     private ConsoleView() {
     }
 
-    public static void show(long tick, Island island) {
+    @Override
+    public void show(long tick, Island island) {
         System.out.println();
         System.out.printf("Tick %d%n", tick);
         showMap(island);
         showStatistics(island);
     }
 
-    private static void showMap(Island island) {
+    private void showMap(Island island) {
         int showRows = SimulationConfig.SHOW_ROWS;
         int showCols = SimulationConfig.SHOW_COLS;
 
@@ -58,7 +62,7 @@ public final class ConsoleView {
         System.out.print(out);
     }
 
-    private static String cellContent(Location location) {
+    private String cellContent(Location location) {
         List<Map.Entry<Class<? extends Organism>, Integer>> grouped = snapshotGroupedCounts(location);
         if (grouped.isEmpty()) {
             return DOT.repeat(CELL_CHARS);
@@ -67,7 +71,7 @@ public final class ConsoleView {
         return centerInCell(icon, " ");
     }
 
-    private static String firstIcon(String icon) {
+    private String firstIcon(String icon) {
         if (icon.isEmpty()) {
             return "?";
         }
@@ -75,7 +79,7 @@ public final class ConsoleView {
         return icon.substring(0, end);
     }
 
-    private static String centerInCell(String icon, String pad) {
+    private String centerInCell(String icon, String pad) {
         int iconChars = icon.length();
         if (iconChars >= CELL_CHARS) {
             return icon.substring(0, CELL_CHARS);
@@ -86,21 +90,21 @@ public final class ConsoleView {
         return pad.repeat(left) + icon + pad.repeat(right);
     }
 
-    private static String formatCell(String content) {
+    private String formatCell(String content) {
         if (content.length() != CELL_CHARS) {
             content = fitToCell(content);
         }
         return CELL_MARGIN + content;
     }
 
-    private static String fitToCell(String content) {
+    private String fitToCell(String content) {
         if (content.length() >= CELL_CHARS) {
             return content.substring(0, CELL_CHARS);
         }
         return content + DOT.repeat(CELL_CHARS - content.length());
     }
 
-    private static List<Map.Entry<Class<? extends Organism>, Integer>> snapshotGroupedCounts(Location location) {
+    private List<Map.Entry<Class<? extends Organism>, Integer>> snapshotGroupedCounts(Location location) {
         Map<Class<? extends Organism>, Integer> counts = new HashMap<>();
         synchronized (location) {
             for (Organism organism : location.getAllOrganisms()) {
@@ -114,7 +118,7 @@ public final class ConsoleView {
         return grouped;
     }
 
-    private static void showStatistics(Island island) {
+    private void showStatistics(Island island) {
         Map<Class<? extends Organism>, Integer> stats = island.getStatistics();
         String line = stats.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey(Comparator.comparing(Class::getSimpleName)))
@@ -123,7 +127,7 @@ public final class ConsoleView {
         System.out.printf("Statistics: %s | total=%d%n", line, island.getTotalOrganismCount());
     }
 
-    private static String border(int cols, String borderSegment, char left, char center, char right, boolean cutCols) {
+    private String border(int cols, String borderSegment, char left, char center, char right, boolean cutCols) {
         char rightChar = cutCols ? INF_MARGIN : right;
         return IntStream.range(0, cols)
                 .mapToObj(col -> (col == 0 ? left : center) + borderSegment)

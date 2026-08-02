@@ -1,7 +1,7 @@
 package com.javarush.island.zolotarev.island.entity.organisms.animals;
 
 public abstract class Herbivore extends Animal {
-    public Herbivore(int x, int y, double weight, double maxFood, int speed, int maxPerCell) {
-        super(x, y, weight, maxFood, speed, maxPerCell);
+    protected Herbivore(int x, int y, Class<? extends Herbivore> type) {
+        super(x, y, type);
     }
 }

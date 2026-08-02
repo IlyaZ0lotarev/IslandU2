@@ -74,24 +74,4 @@ public class Location {
                 .mapToInt(Set::size)
                 .sum();
     }
-
-    public synchronized boolean isEmpty() {
-        return organisms.isEmpty();
-    }
-
-    @Override
-    public String toString() {
-        synchronized (this) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Location{");
-            organisms.forEach((type, set) -> {
-                sb.append(type.getSimpleName()).append("=").append(set.size()).append(", ");
-            });
-            if (sb.length() > 9) {
-                sb.setLength(sb.length() - 2);
-            }
-            sb.append("}");
-            return sb.toString();
-        }
-    }
 }

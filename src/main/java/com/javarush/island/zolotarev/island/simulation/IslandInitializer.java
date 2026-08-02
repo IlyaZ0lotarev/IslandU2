@@ -1,5 +1,6 @@
 package com.javarush.island.zolotarev.island.simulation;
 
+import com.javarush.island.zolotarev.island.config.OrganismRegistry;
 import com.javarush.island.zolotarev.island.config.SimulationConfig;
 import com.javarush.island.zolotarev.island.entity.map.Island;
 import com.javarush.island.zolotarev.island.entity.map.Location;
@@ -31,7 +32,7 @@ public final class IslandInitializer {
             return;
         }
         Constructor<? extends Organism> constructor = resolveConstructor(type);
-        int maxPerCell = createPrototype(constructor, 0, 0).getMaxPerCell();
+        int maxPerCell = OrganismRegistry.maxPerCell(type);
         ThreadLocalRandom random = ThreadLocalRandom.current();
         int placed = 0;
         int maxAttempts = count * PLACEMENT_ATTEMPTS_PER_UNIT;

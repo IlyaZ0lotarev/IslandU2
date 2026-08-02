@@ -1,8 +1,8 @@
 package com.javarush.island.zolotarev.island.entity.organisms;
 
+import com.javarush.island.zolotarev.island.config.OrganismRegistry;
+import com.javarush.island.zolotarev.island.config.SpeciesSettings;
 import com.javarush.island.zolotarev.island.entity.Entity;
-import com.javarush.island.zolotarev.island.entity.map.Location;
-import com.javarush.island.zolotarev.island.util.Direction;
 
 public abstract class Organism extends Entity {
     protected double weight;
@@ -11,14 +11,22 @@ public abstract class Organism extends Entity {
     protected double foodEaten;
     protected int maxPerCell;
     protected boolean alive = true;
+    private final String icon;
 
-    public Organism(int x, int y, double weight, double maxFood, int maxPerCell) {
+    protected Organism(int x, int y, Class<? extends Organism> type) {
         super(x, y);
-        this.weight = weight;
-        this.maxWeight = weight;
-        this.maxFood = maxFood;
-        this.maxPerCell = maxPerCell;
+        SpeciesSettings settings = OrganismRegistry.require(type);
+        this.weight = settings.weight;
+        this.maxWeight = settings.weight;
+        this.maxFood = settings.maxFood;
+        this.maxPerCell = settings.maxPerCell;
+        this.icon = settings.icon != null ? settings.icon : "?";
         this.foodEaten = 0.0;
+    }
+
+    @Override
+    public String getIcon() {
+        return icon;
     }
 
     public boolean isAlive() {
@@ -31,18 +39,6 @@ public abstract class Organism extends Entity {
 
     public double getWeight() {
         return weight;
-    }
-
-    public double getMaxWeight() {
-        return maxWeight;
-    }
-
-    public double getMaxFood() {
-        return maxFood;
-    }
-
-    public double getFoodEaten() {
-        return foodEaten;
     }
 
     public int getMaxPerCell() {
@@ -65,8 +61,6 @@ public abstract class Organism extends Entity {
     }
 
     public abstract boolean canEat(Organism target);
-    public abstract void reproduce(Location location);
-    public abstract Direction chooseMovementDirection();
-    public abstract void metabolize();
 
+    public abstract void metabolize();
 }

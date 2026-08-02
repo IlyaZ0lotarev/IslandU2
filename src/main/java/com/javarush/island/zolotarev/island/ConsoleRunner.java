@@ -12,8 +12,12 @@ public class ConsoleRunner {
         SimulationScheduler scheduler = new SimulationScheduler(engine);
 
         System.out.println("Simulation started: " + island);
-        scheduler.start();
-        scheduler.awaitFinish();
+        try {
+            scheduler.start();
+            scheduler.awaitFinish();
+        } finally {
+            engine.shutdown();
+        }
         System.out.println("Simulation finished at tick " + engine.getTick());
     }
 }

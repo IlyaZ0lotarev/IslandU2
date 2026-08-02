@@ -1,5 +1,6 @@
 package com.javarush.island.zolotarev.island.config;
 
+import com.javarush.island.zolotarev.island.api.repository.Repository;
 import com.javarush.island.zolotarev.island.entity.organisms.Organism;
 
 import java.util.Collections;
@@ -20,25 +21,17 @@ public final class SimulationConfig {
     public static final int PLANT_GROW_CHANCE_PERCENT = SETTINGS.percentPlantGrow;
     public static final int SHOW_ROWS = SETTINGS.showRows;
     public static final int SHOW_COLS = SETTINGS.showCols;
-    public static final int CONSOLE_CELL_WIDTH = SETTINGS.consoleCellWith;
     public static final int PERCENT_ANIMAL_SLIM = SETTINGS.percentAnimalSlim;
     public static final int WORKER_POOL_SIZE = resolveWorkerPoolSize();
 
+    private static final Repository REPOSITORY = OrganismRepository.INSTANCE;
     private static final Map<Class<? extends Organism>, Integer> INITIAL_POPULATION = loadInitialPopulation();
 
     private SimulationConfig() {
     }
 
-    public static IslandSettings settings() {
-        return SETTINGS;
-    }
-
     public static Map<Class<? extends Organism>, Integer> getInitialPopulation() {
         return Collections.unmodifiableMap(INITIAL_POPULATION);
-    }
-
-    public static int getInitialCount(Class<? extends Organism> type) {
-        return INITIAL_POPULATION.getOrDefault(type, 0);
     }
 
     public static boolean isTickLimitReached(long currentTick) {
@@ -59,7 +52,7 @@ public final class SimulationConfig {
             return population;
         }
         for (Map.Entry<String, Integer> entry : fromYaml.entrySet()) {
-            OrganismRegistry.find(entry.getKey()).ifPresent(type -> {
+            REPOSITORY.find(entry.getKey()).ifPresent(type -> {
                 int count = entry.getValue() != null ? entry.getValue() : 0;
                 if (count > 0) {
                     population.put(type, count);

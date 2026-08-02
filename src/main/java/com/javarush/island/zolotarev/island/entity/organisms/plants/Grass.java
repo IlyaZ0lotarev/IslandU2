@@ -8,12 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Grass extends Plant {
 
     public Grass(int x, int y) {
-        super(x, y, 1.0, 200);
-    }
-
-    @Override
-    public String getIcon() {
-        return "🌿";
+        super(x, y, Grass.class);
     }
 
     @Override

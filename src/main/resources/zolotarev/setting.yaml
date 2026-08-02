@@ -4,14 +4,110 @@ rows: 20
 cols: 100
 maxTicks: 0
 stopWhenNoAnimals: true
-reproduceChance: 0.2
+reproduceChance: 0.3
 offspringPerBirth: 1
 workerPoolSize: 0
 showRows: 5
 showCols: 20
-consoleCellWith: 1
 percentAnimalSlim: 5
 percentPlantGrow: 25
+species:
+  Wolf:
+    weight: 50
+    maxFood: 8
+    speed: 3
+    maxPerCell: 30
+    icon: "🐺"
+  Boa:
+    weight: 15
+    maxFood: 3
+    speed: 1
+    maxPerCell: 30
+    icon: "🐍"
+  Fox:
+    weight: 8
+    maxFood: 2
+    speed: 2
+    maxPerCell: 30
+    icon: "🦊"
+  Bear:
+    weight: 500
+    maxFood: 80
+    speed: 2
+    maxPerCell: 5
+    icon: "🐻"
+  Eagle:
+    weight: 6
+    maxFood: 1
+    speed: 3
+    maxPerCell: 20
+    icon: "🦅"
+  Horse:
+    weight: 400
+    maxFood: 60
+    speed: 4
+    maxPerCell: 20
+    icon: "🐎"
+  Deer:
+    weight: 300
+    maxFood: 50
+    speed: 4
+    maxPerCell: 20
+    icon: "🦌"
+  Rabbit:
+    weight: 2
+    maxFood: 0.45
+    speed: 2
+    maxPerCell: 150
+    icon: "🐇"
+  Mouse:
+    weight: 0.05
+    maxFood: 0.01
+    speed: 1
+    maxPerCell: 500
+    icon: "🐁"
+  Goat:
+    weight: 60
+    maxFood: 10
+    speed: 3
+    maxPerCell: 140
+    icon: "🐐"
+  Sheep:
+    weight: 70
+    maxFood: 15
+    speed: 3
+    maxPerCell: 140
+    icon: "🐑"
+  Boar:
+    weight: 400
+    maxFood: 50
+    speed: 2
+    maxPerCell: 50
+    icon: "🐗"
+  Buffalo:
+    weight: 700
+    maxFood: 100
+    speed: 3
+    maxPerCell: 10
+    icon: "🐃"
+  Duck:
+    weight: 1
+    maxFood: 0.15
+    speed: 4
+    maxPerCell: 200
+    icon: "🦆"
+  Caterpillar:
+    weight: 0.01
+    maxFood: 0.01
+    speed: 0
+    maxPerCell: 1000
+    icon: "🐛"
+  Grass:
+    weight: 1
+    maxFood: 0
+    speed: 0
+    maxPerCell: 200
+    icon: "🌿"
 initialPopulation:
   Wolf: 30
   Boa: 30

@@ -1,6 +1,10 @@
 package com.javarush.island.zolotarev.island.entity.organisms.animals;
 
+import com.javarush.island.zolotarev.island.api.entity.Eating;
+import com.javarush.island.zolotarev.island.api.entity.Movable;
+import com.javarush.island.zolotarev.island.api.entity.Reproducible;
 import com.javarush.island.zolotarev.island.config.FoodMatrix;
+import com.javarush.island.zolotarev.island.config.OrganismRegistry;
 import com.javarush.island.zolotarev.island.config.SimulationConfig;
 import com.javarush.island.zolotarev.island.entity.map.Island;
 import com.javarush.island.zolotarev.island.entity.map.Location;
@@ -12,16 +16,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
-public abstract class Animal extends Organism {
+public abstract class Animal extends Organism implements Eating, Movable, Reproducible {
     protected int speed;
 
-    public Animal(int x, int y, double weight, double maxFood, int speed, int maxPerCell) {
-        super(x, y, weight, maxFood, maxPerCell);
-        this.speed = speed;
-    }
-
-    public int getSpeed() {
-        return speed;
+    protected Animal(int x, int y, Class<? extends Animal> type) {
+        super(x, y, type);
+        this.speed = OrganismRegistry.require(type).speed;
     }
 
     public void act(Island island) {
@@ -37,10 +37,11 @@ public abstract class Animal extends Organism {
             move(island);
         }
         if (alive) {
-            reproduce(location);
+            spawn(location);
         }
     }
 
+    @Override
     public void eat(Location location) {
         if (!isHungry()) {
             return;
@@ -86,6 +87,7 @@ public abstract class Animal extends Organism {
         return Direction.randomForMovement();
     }
 
+    @Override
     public void move(Island island) {
         if (speed <= 0) {
             return;
@@ -119,7 +121,7 @@ public abstract class Animal extends Organism {
     }
 
     @Override
-    public void reproduce(Location location) {
+    public void spawn(Location location) {
         if (!alive || location.countOrganismsOfType(getClass()) >= maxPerCell) {
             return;
         }

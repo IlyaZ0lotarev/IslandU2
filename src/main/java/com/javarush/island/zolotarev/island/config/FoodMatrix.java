@@ -1,5 +1,6 @@
 package com.javarush.island.zolotarev.island.config;
 
+import com.javarush.island.zolotarev.island.api.repository.Repository;
 import com.javarush.island.zolotarev.island.entity.organisms.Organism;
 
 import java.util.Collections;
@@ -8,6 +9,7 @@ import java.util.Map;
 
 public final class FoodMatrix {
 
+    private static final Repository REPOSITORY = OrganismRepository.INSTANCE;
     private static final Map<Class<?>, Map<Class<? extends Organism>, Integer>> MATRIX = loadFromSettings();
 
     private FoodMatrix() {
@@ -20,13 +22,13 @@ public final class FoodMatrix {
             return matrix;
         }
         for (Map.Entry<String, Map<String, Integer>> eaterEntry : foodMap.entrySet()) {
-            OrganismRegistry.find(eaterEntry.getKey()).ifPresent(eaterClass -> {
+            REPOSITORY.find(eaterEntry.getKey()).ifPresent(eaterClass -> {
                 Map<String, Integer> preyMap = eaterEntry.getValue();
                 if (preyMap == null || preyMap.isEmpty()) {
                     return;
                 }
                 for (Map.Entry<String, Integer> preyEntry : preyMap.entrySet()) {
-                    OrganismRegistry.find(preyEntry.getKey()).ifPresent(preyClass -> {
+                    REPOSITORY.find(preyEntry.getKey()).ifPresent(preyClass -> {
                         int percent = preyEntry.getValue() != null ? preyEntry.getValue() : 0;
                         if (percent > 0) {
                             matrix.computeIfAbsent(eaterClass, k -> new HashMap<>())

@@ -12,7 +12,7 @@ import java.util.Optional;
 public final class OrganismRegistry {
 
     private static final Map<String, Class<? extends Organism>> BY_NAME = new HashMap<>();
-    private static final Map<Class<? extends Organism>, Organism> PROTOTYPE = new HashMap<>();
+    private static final Map<Class<? extends Organism>, SpeciesSettings> SPECIES;
 
     static {
         register(Wolf.class);
@@ -31,6 +31,8 @@ public final class OrganismRegistry {
         register(Duck.class);
         register(Caterpillar.class);
         register(Grass.class);
+        SPECIES = loadSpecies();
+        validateAllSpeciesConfigured();
     }
 
     private OrganismRegistry() {
@@ -38,34 +40,43 @@ public final class OrganismRegistry {
 
     private static void register(Class<? extends Organism> type) {
         BY_NAME.put(type.getSimpleName(), type);
-        PROTOTYPE.put(type, createPrototype(type));
     }
 
     public static Optional<Class<? extends Organism>> find(String name) {
         return Optional.ofNullable(BY_NAME.get(name));
     }
 
-    public static String getIcon(Class<? extends Organism> type) {
-        Organism prototype = PROTOTYPE.get(type);
-        if (prototype == null) {
-            return "?";
+    public static SpeciesSettings require(Class<? extends Organism> type) {
+        SpeciesSettings settings = SPECIES.get(type);
+        if (settings == null) {
+            throw new IllegalStateException("Species settings not found for " + type.getSimpleName());
         }
-        return prototype.getIcon();
+        return settings;
+    }
+
+    public static String getIcon(Class<? extends Organism> type) {
+        return require(type).icon;
     }
 
     public static int maxPerCell(Class<? extends Organism> type) {
-        Organism prototype = PROTOTYPE.get(type);
-        if (prototype == null) {
-            return 1;
-        }
-        return prototype.getMaxPerCell();
+        return require(type).maxPerCell;
     }
 
-    private static Organism createPrototype(Class<? extends Organism> type) {
-        try {
-            return type.getConstructor(int.class, int.class).newInstance(0, 0);
-        } catch (ReflectiveOperationException e) {
-            throw new IllegalStateException("Cannot create prototype for " + type.getSimpleName(), e);
+    private static Map<Class<? extends Organism>, SpeciesSettings> loadSpecies() {
+        Map<Class<? extends Organism>, SpeciesSettings> species = new HashMap<>();
+        Map<String, SpeciesSettings> fromYaml = SettingsLoader.get().species;
+        if (fromYaml == null || fromYaml.isEmpty()) {
+            return species;
+        }
+        for (Map.Entry<String, SpeciesSettings> entry : fromYaml.entrySet()) {
+            find(entry.getKey()).ifPresent(type -> species.put(type, entry.getValue()));
+        }
+        return species;
+    }
+
+    private static void validateAllSpeciesConfigured() {
+        for (Class<? extends Organism> type : BY_NAME.values()) {
+            require(type);
         }
     }
 }

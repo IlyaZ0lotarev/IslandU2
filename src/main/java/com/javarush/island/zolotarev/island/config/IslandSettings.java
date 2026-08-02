@@ -14,9 +14,9 @@ public class IslandSettings {
     public int workerPoolSize = 0;
     public int showRows = 5;
     public int showCols = 40;
-    public int consoleCellWith = 2;
     public int percentAnimalSlim = 5;
     public int percentPlantGrow = 25;
+    public Map<String, SpeciesSettings> species = new LinkedHashMap<>();
     public Map<String, Integer> initialPopulation = new LinkedHashMap<>();
     public Map<String, Map<String, Integer>> foodMap = new LinkedHashMap<>();
 }

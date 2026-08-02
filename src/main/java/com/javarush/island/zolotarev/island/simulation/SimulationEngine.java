@@ -1,5 +1,6 @@
 package com.javarush.island.zolotarev.island.simulation;
 
+import com.javarush.island.zolotarev.island.api.view.View;
 import com.javarush.island.zolotarev.island.config.SimulationConfig;
 import com.javarush.island.zolotarev.island.entity.map.Island;
 import com.javarush.island.zolotarev.island.entity.map.Location;
@@ -10,24 +11,30 @@ import com.javarush.island.zolotarev.island.view.console.ConsoleView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public class SimulationEngine {
 
     private static final long WORKER_AWAIT_MINUTES = 10;
 
     private final Island island;
+    private final View view;
+    private final ExecutorService workerPool;
     private long tick;
 
     public SimulationEngine(Island island) {
-        this.island = island;
-        this.tick = 0;
+        this(island, ConsoleView.INSTANCE);
     }
 
-    public Island getIsland() {
-        return island;
+    public SimulationEngine(Island island, View view) {
+        this.island = island;
+        this.view = view;
+        this.tick = 0;
+        this.workerPool = Executors.newFixedThreadPool(SimulationConfig.WORKER_POOL_SIZE);
     }
 
     public long getTick() {
@@ -41,6 +48,17 @@ public class SimulationEngine {
         return SimulationConfig.STOP_WHEN_NO_ANIMALS && countLiveAnimals() == 0;
     }
 
+    public void shutdown() {
+        workerPool.shutdown();
+        try {
+            if (!workerPool.awaitTermination(WORKER_AWAIT_MINUTES, TimeUnit.MINUTES)) {
+                workerPool.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            workerPool.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+    }
 
     public void runOneTick() {
         growPlants();
@@ -49,7 +67,7 @@ public class SimulationEngine {
         runMetabolismPhase(animals);
         removeDeadFromAllCells();
         tick++;
-        ConsoleView.show(tick, island);
+        view.show(tick, island);
     }
 
     private void growPlants() {
@@ -70,44 +88,35 @@ public class SimulationEngine {
     }
 
     private void runAnimalPhase(List<Animal> animals) {
-        if (animals.isEmpty()) {
-            return;
-        }
-        ExecutorService pool = Executors.newFixedThreadPool(SimulationConfig.WORKER_POOL_SIZE);
-        for (Animal animal : animals) {
-            pool.submit(() -> {
-                if (animal.isAlive()) {
-                    animal.act(island);
-                }
-            });
-        }
-        shutdownAndAwait(pool);
+        runInParallel(animals, animal -> animal.act(island));
     }
 
     private void runMetabolismPhase(List<Animal> animals) {
+        runInParallel(animals, animal -> animal.metabolize());
+    }
+
+    private void runInParallel(List<Animal> animals, Consumer<Animal> action) {
         if (animals.isEmpty()) {
             return;
         }
-        ExecutorService pool = Executors.newFixedThreadPool(SimulationConfig.WORKER_POOL_SIZE);
+        List<Callable<Void>> tasks = new ArrayList<>(animals.size());
         for (Animal animal : animals) {
-            pool.submit(() -> {
+            tasks.add(() -> {
                 if (animal.isAlive()) {
-                    animal.metabolize();
+                    action.accept(animal);
                 }
+                return null;
             });
         }
-        shutdownAndAwait(pool);
+        awaitTasks(tasks);
     }
 
-    private void shutdownAndAwait(ExecutorService pool) {
-        pool.shutdown();
+    private void awaitTasks(List<Callable<Void>> tasks) {
         try {
-            if (!pool.awaitTermination(WORKER_AWAIT_MINUTES, TimeUnit.MINUTES)) {
-                pool.shutdownNow();
-            }
+            workerPool.invokeAll(tasks);
         } catch (InterruptedException e) {
-            pool.shutdownNow();
             Thread.currentThread().interrupt();
+            throw new IllegalStateException("Simulation worker pool interrupted", e);
         }
     }
 
