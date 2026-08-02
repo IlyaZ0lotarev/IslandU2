@@ -6,6 +6,7 @@ import com.javarush.island.zolotarev.island.util.Direction;
 
 public abstract class Organism extends Entity {
     protected double weight;
+    protected final double maxWeight;
     protected double maxFood;
     protected double foodEaten;
     protected int maxPerCell;
@@ -14,6 +15,7 @@ public abstract class Organism extends Entity {
     public Organism(int x, int y, double weight, double maxFood, int maxPerCell) {
         super(x, y);
         this.weight = weight;
+        this.maxWeight = weight;
         this.maxFood = maxFood;
         this.maxPerCell = maxPerCell;
         this.foodEaten = 0.0;
@@ -29,6 +31,10 @@ public abstract class Organism extends Entity {
 
     public double getWeight() {
         return weight;
+    }
+
+    public double getMaxWeight() {
+        return maxWeight;
     }
 
     public double getMaxFood() {

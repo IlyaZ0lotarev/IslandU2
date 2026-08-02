@@ -152,7 +152,14 @@ public abstract class Animal extends Organism {
             resetFoodEaten();
             return;
         }
-        if (foodEaten < maxFood) {
+        if (foodEaten >= maxFood) {
+            resetFoodEaten();
+            return;
+        }
+        double hungerFraction = 1.0 - (foodEaten / maxFood);
+        double loss = maxWeight * SimulationConfig.PERCENT_ANIMAL_SLIM / 100.0 * hungerFraction;
+        weight = Math.max(0.0, weight - loss);
+        if (weight <= 0.0) {
             die();
         }
         resetFoodEaten();

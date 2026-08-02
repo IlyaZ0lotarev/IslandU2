@@ -6,7 +6,7 @@ import com.javarush.island.zolotarev.island.entity.map.Location;
 import com.javarush.island.zolotarev.island.entity.organisms.Organism;
 import com.javarush.island.zolotarev.island.entity.organisms.animals.Animal;
 import com.javarush.island.zolotarev.island.entity.organisms.plants.Grass;
-import com.javarush.island.zolotarev.island.view.StatisticsPrinter;
+import com.javarush.island.zolotarev.island.view.console.ConsoleView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +49,7 @@ public class SimulationEngine {
         runMetabolismPhase(animals);
         removeDeadFromAllCells();
         tick++;
-        StatisticsPrinter.print(tick, island);
+        ConsoleView.show(tick, island);
     }
 
     private void growPlants() {

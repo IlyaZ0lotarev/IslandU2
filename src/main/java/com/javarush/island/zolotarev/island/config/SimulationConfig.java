@@ -1,66 +1,36 @@
 package com.javarush.island.zolotarev.island.config;
 
 import com.javarush.island.zolotarev.island.entity.organisms.Organism;
-import com.javarush.island.zolotarev.island.entity.organisms.animals.herbivores.*;
-import com.javarush.island.zolotarev.island.entity.organisms.animals.predators.*;
-import com.javarush.island.zolotarev.island.entity.organisms.plants.Grass;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Параметры симуляции
- */
 public final class SimulationConfig {
 
-    public static final int ISLAND_WIDTH = 100;
-    public static final int ISLAND_HEIGHT = 20;
+    private static final IslandSettings SETTINGS = SettingsLoader.get();
 
-    public static final long TICK_PERIOD_MS = 500;
+    public static final int ISLAND_WIDTH = SETTINGS.cols;
+    public static final int ISLAND_HEIGHT = SETTINGS.rows;
+    public static final long TICK_PERIOD_MS = SETTINGS.period;
+    public static final long MAX_TICKS = SETTINGS.maxTicks;
+    public static final boolean STOP_WHEN_NO_ANIMALS = SETTINGS.stopWhenNoAnimals;
+    public static final double REPRODUCE_CHANCE = SETTINGS.reproduceChance;
+    public static final int OFFSPRING_PER_BIRTH = SETTINGS.offspringPerBirth;
+    public static final int PLANT_GROW_CHANCE_PERCENT = SETTINGS.percentPlantGrow;
+    public static final int SHOW_ROWS = SETTINGS.showRows;
+    public static final int SHOW_COLS = SETTINGS.showCols;
+    public static final int CONSOLE_CELL_WIDTH = SETTINGS.consoleCellWith;
+    public static final int PERCENT_ANIMAL_SLIM = SETTINGS.percentAnimalSlim;
+    public static final int WORKER_POOL_SIZE = resolveWorkerPoolSize();
 
-    public static final long MAX_TICKS = 0;
-
-    public static final boolean STOP_WHEN_NO_ANIMALS = true;
-
-    public static final double REPRODUCE_CHANCE = 0.2;
-    public static final int OFFSPRING_PER_BIRTH = 1;
-    public static final int PLANT_GROW_CHANCE_PERCENT = 25;
-
-    public static final int SHOW_ROWS = 5;
-    public static final int SHOW_COLS = 40;
-    public static final int CONSOLE_CELL_WIDTH = 2;
-
-    public static final int WORKER_POOL_SIZE = Math.max(2, Runtime.getRuntime().availableProcessors());
-
-    private static final Map<Class<? extends Organism>, Integer> INITIAL_POPULATION = new LinkedHashMap<>();
-
-    static {
-        registerInitialPopulation();
-    }
+    private static final Map<Class<? extends Organism>, Integer> INITIAL_POPULATION = loadInitialPopulation();
 
     private SimulationConfig() {
     }
 
-    private static void registerInitialPopulation() {
-        INITIAL_POPULATION.put(Wolf.class, 30);
-        INITIAL_POPULATION.put(Boa.class, 30);
-        INITIAL_POPULATION.put(Fox.class, 30);
-        INITIAL_POPULATION.put(Bear.class, 5);
-        INITIAL_POPULATION.put(Eagle.class, 20);
-
-        INITIAL_POPULATION.put(Horse.class, 20);
-        INITIAL_POPULATION.put(Deer.class, 20);
-        INITIAL_POPULATION.put(Rabbit.class, 150);
-        INITIAL_POPULATION.put(Mouse.class, 500);
-        INITIAL_POPULATION.put(Goat.class, 140);
-        INITIAL_POPULATION.put(Sheep.class, 140);
-        INITIAL_POPULATION.put(Boar.class, 50);
-        INITIAL_POPULATION.put(Buffalo.class, 10);
-        INITIAL_POPULATION.put(Duck.class, 200);
-        INITIAL_POPULATION.put(Caterpillar.class, 1000);
-
-        INITIAL_POPULATION.put(Grass.class, 5000);
+    public static IslandSettings settings() {
+        return SETTINGS;
     }
 
     public static Map<Class<? extends Organism>, Integer> getInitialPopulation() {
@@ -73,5 +43,29 @@ public final class SimulationConfig {
 
     public static boolean isTickLimitReached(long currentTick) {
         return MAX_TICKS > 0 && currentTick >= MAX_TICKS;
+    }
+
+    private static int resolveWorkerPoolSize() {
+        if (SETTINGS.workerPoolSize > 0) {
+            return SETTINGS.workerPoolSize;
+        }
+        return Math.max(2, Runtime.getRuntime().availableProcessors());
+    }
+
+    private static Map<Class<? extends Organism>, Integer> loadInitialPopulation() {
+        Map<Class<? extends Organism>, Integer> population = new LinkedHashMap<>();
+        Map<String, Integer> fromYaml = SETTINGS.initialPopulation;
+        if (fromYaml == null || fromYaml.isEmpty()) {
+            return population;
+        }
+        for (Map.Entry<String, Integer> entry : fromYaml.entrySet()) {
+            OrganismRegistry.find(entry.getKey()).ifPresent(type -> {
+                int count = entry.getValue() != null ? entry.getValue() : 0;
+                if (count > 0) {
+                    population.put(type, count);
+                }
+            });
+        }
+        return population;
     }
 }

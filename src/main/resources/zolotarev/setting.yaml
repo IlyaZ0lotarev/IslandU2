@@ -2,14 +2,36 @@
 period: 500
 rows: 20
 cols: 100
+maxTicks: 0
+stopWhenNoAnimals: true
+reproduceChance: 0.2
+offspringPerBirth: 1
+workerPoolSize: 0
 showRows: 5
-showCols: 40
-consoleCellWith: 2
+showCols: 20
+consoleCellWith: 1
 percentAnimalSlim: 5
 percentPlantGrow: 25
+initialPopulation:
+  Wolf: 30
+  Boa: 30
+  Fox: 30
+  Bear: 5
+  Eagle: 20
+  Horse: 20
+  Deer: 20
+  Rabbit: 150
+  Mouse: 500
+  Goat: 140
+  Sheep: 140
+  Boar: 50
+  Buffalo: 10
+  Duck: 200
+  Caterpillar: 1000
+  Grass: 5000
 foodMap:
   Wolf:
-    Horse: 50
+    Horse: 10
     Deer: 15
     Rabbit: 60
     Mouse: 80
