@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-//Вероятности поедания (0–100)
 public final class FoodMatrix {
 
     private static final Map<Class<?>, Map<Class<? extends Organism>, Integer>> MATRIX = new HashMap<>();
@@ -29,7 +28,6 @@ public final class FoodMatrix {
         MATRIX.computeIfAbsent(eater, k -> new HashMap<>()).put(prey, percent);
     }
 
-    //Хищники
     private static void registerPredators() {
         register(Wolf.class, Horse.class, 10);
         register(Wolf.class, Deer.class, 15);
@@ -68,7 +66,6 @@ public final class FoodMatrix {
         register(Eagle.class, Duck.class, 80);
     }
 
-    // Травоядные
     private static void registerHerbivores() {
         register(Horse.class, Grass.class, 100);
         register(Deer.class, Grass.class, 100);
@@ -86,7 +83,6 @@ public final class FoodMatrix {
         register(Caterpillar.class, Grass.class, 100);
     }
 
-    // Шанс поедания. 0, если пары нет в таблице.
     public static int probability(Class<?> eater, Class<?> prey) {
         Map<Class<? extends Organism>, Integer> diet = MATRIX.get(eater);
         if (diet == null) {
@@ -95,8 +91,6 @@ public final class FoodMatrix {
         return diet.getOrDefault(prey, 0);
     }
 
-
-    // Копия рациона для вида (жертва → процент)
     public static Map<Class<? extends Organism>, Integer> dietFor(Class<?> eater) {
         Map<Class<? extends Organism>, Integer> diet = MATRIX.get(eater);
         if (diet == null) {

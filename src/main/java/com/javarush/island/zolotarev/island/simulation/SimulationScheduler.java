@@ -56,10 +56,6 @@ public final class SimulationScheduler {
         }
     }
 
-    /**
-     * Останавливает планировщик. Вызывается из потока такта — без {@code awaitTermination} здесь
-     * (иначе поток блокирует сам себя).
-     */
     private void requestStop() {
         if (!stopped.compareAndSet(false, true)) {
             return;
@@ -71,7 +67,6 @@ public final class SimulationScheduler {
         finished.countDown();
     }
 
-    /** Блокирует main, пока симуляция не завершится; дожидается остановки планировщика. */
     public void awaitFinish() throws InterruptedException {
         finished.await();
         ScheduledExecutorService local = scheduler;

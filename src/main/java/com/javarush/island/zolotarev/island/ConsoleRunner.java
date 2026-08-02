@@ -11,7 +11,7 @@ public class ConsoleRunner {
         SimulationEngine engine = new SimulationEngine(island);
         SimulationScheduler scheduler = new SimulationScheduler(engine);
 
-        System.out.println("Simulation started (scheduled, multithreaded): " + island);
+        System.out.println("Simulation started: " + island);
         scheduler.start();
         scheduler.awaitFinish();
         System.out.println("Simulation finished at tick " + engine.getTick());

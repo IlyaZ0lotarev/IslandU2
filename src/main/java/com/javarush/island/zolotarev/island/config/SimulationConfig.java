@@ -14,31 +14,23 @@ import java.util.Map;
  */
 public final class SimulationConfig {
 
-    //Остров
     public static final int ISLAND_WIDTH = 100;
     public static final int ISLAND_HEIGHT = 20;
 
-    //Такт
-    //Пауза между тактами мс.
     public static final long TICK_PERIOD_MS = 500;
 
-    // Максимум тактов
     public static final long MAX_TICKS = 0;
 
-    //Остановить симуляцию, если на острове не осталось животных
     public static final boolean STOP_WHEN_NO_ANIMALS = true;
 
-    //Поведение
     public static final double REPRODUCE_CHANCE = 0.2;
     public static final int OFFSPRING_PER_BIRTH = 1;
     public static final int PLANT_GROW_CHANCE_PERCENT = 25;
 
-    //Консольный вывод
     public static final int SHOW_ROWS = 5;
     public static final int SHOW_COLS = 40;
     public static final int CONSOLE_CELL_WIDTH = 2;
 
-    /** Потоки для жизненного цикла животных внутри одного такта. */
     public static final int WORKER_POOL_SIZE = Math.max(2, Runtime.getRuntime().availableProcessors());
 
     private static final Map<Class<? extends Organism>, Integer> INITIAL_POPULATION = new LinkedHashMap<>();
@@ -71,7 +63,6 @@ public final class SimulationConfig {
         INITIAL_POPULATION.put(Grass.class, 5000);
     }
 
-    //Сколько экземпляров каждого вида создать при старте (случайные клетки)
     public static Map<Class<? extends Organism>, Integer> getInitialPopulation() {
         return Collections.unmodifiableMap(INITIAL_POPULATION);
     }
@@ -80,7 +71,6 @@ public final class SimulationConfig {
         return INITIAL_POPULATION.getOrDefault(type, 0);
     }
 
-    //Лимит по тактам
     public static boolean isTickLimitReached(long currentTick) {
         return MAX_TICKS > 0 && currentTick >= MAX_TICKS;
     }

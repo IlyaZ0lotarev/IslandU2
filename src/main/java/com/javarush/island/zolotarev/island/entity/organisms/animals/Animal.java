@@ -146,7 +146,6 @@ public abstract class Animal extends Organism {
         }
     }
 
-    /** Смерть от голода, если за такт не набрано maxFood кг пищи. */
     @Override
     public void metabolize() {
         if (!alive || maxFood <= 0) {

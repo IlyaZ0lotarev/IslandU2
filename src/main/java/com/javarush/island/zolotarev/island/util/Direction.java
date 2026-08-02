@@ -24,7 +24,6 @@ public enum Direction {
         return VALUES[ThreadLocalRandom.current().nextInt(VALUES_LENGTH)];
     }
 
-    /** Случайное направление шага (без STAY). */
     public static Direction randomForMovement() {
         Direction direction;
         do {

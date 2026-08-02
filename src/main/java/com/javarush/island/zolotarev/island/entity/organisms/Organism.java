@@ -6,9 +6,9 @@ import com.javarush.island.zolotarev.island.util.Direction;
 
 public abstract class Organism extends Entity {
     protected double weight;
-    protected double maxFood;     // сколько еды нужно для насыщения
-    protected double foodEaten;   // сколько уже съедено в этом такте
-    protected int maxPerCell;      // макс. количество этого вида на одной клетке
+    protected double maxFood;
+    protected double foodEaten;
+    protected int maxPerCell;
     protected boolean alive = true;
 
     public Organism(int x, int y, double weight, double maxFood, int maxPerCell) {

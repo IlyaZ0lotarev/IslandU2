@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 public class Location {
     private final Map<Class<? extends Organism>, Set<Organism>> organisms = new HashMap<>();
 
-    /** Две клетки в фиксированном порядке — чтобы не было взаимной блокировки при переходе. */
     public static void withLocks(Location first, Location second, Runnable action) {
         if (first == second) {
             synchronized (first) {
